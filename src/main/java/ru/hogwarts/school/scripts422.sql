@@ -17,6 +17,7 @@ ALTER TABLE cars
 ADD CONSTRAINT cars_unique UNIQUE (brand, model);
 
 
+
 SELECT s.name, s.age, f.name
 FROM student s
 JOIN faculty f ON s.faculty_id = f.id;
