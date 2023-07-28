@@ -61,4 +61,13 @@ public class FacultyController {
     public void deleteFaculty(@PathVariable Long id) {
         facultyService.deleteFaculty(id);
     }
+    @GetMapping("longest-name")
+    public ResponseEntity<String> getFacultyNameWithLongestName() {
+        String facultyName = facultyService.getFacultyNameWithLongestName();
+        return ResponseEntity.ok(facultyName);
+    }
+    @GetMapping("formula-step-4")
+    public ResponseEntity<Integer> calculateFormula() {
+        return facultyService.calculateFormula();
+    }
 }
