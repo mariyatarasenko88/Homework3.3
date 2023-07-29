@@ -67,7 +67,16 @@ public class FacultyController {
         return ResponseEntity.ok(facultyName);
     }
     @GetMapping("formula-step-4")
-    public ResponseEntity<Integer> calculateFormula() {
+    public ResponseEntity<String> calculateFormula() {
         return facultyService.calculateFormula();
     }
+    @GetMapping("formula-step-4-2")
+    public ResponseEntity<String> calculateFormulaTwo() {
+        return facultyService.calculateFormulaTwo();
+    }
+    @GetMapping("formula-step-4-3")
+    public ResponseEntity<String> calculateFormulaThree() {
+        return facultyService.calculateFormulaThree();
+    }
 }
+

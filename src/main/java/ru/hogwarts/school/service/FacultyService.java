@@ -66,15 +66,38 @@ public class FacultyService {
                 .reduce("", (a, b) -> a.length() > b.length() ? a : b);
     }
 
-    public ResponseEntity<Integer> calculateFormula() {
+    public ResponseEntity<String> calculateFormula() {
         long start = System.nanoTime();
         Integer result = Stream.iterate(1, a -> a + 1)
-                .limit(100_000_000)
+                .limit(100_000)
                 .parallel()
                 .reduce(0, (a, b) -> a + b);
         long finish = System.nanoTime();
-        long elapsed = finish - start; // 64_666_200
+        long elapsed = finish - start;
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok("время " + elapsed + " результат " + result);
+    }
+    public ResponseEntity<String> calculateFormulaTwo() {
+        long start = System.nanoTime();
+
+        int sum = 0;
+        int i;
+        for(i = 0; i < 100_000; i++) {
+            sum += i;
+        }
+        long finish = System.nanoTime();
+        long elapsed = finish - start;
+
+        return ResponseEntity.ok("время " + elapsed + " результат " + sum);
+    }
+    public ResponseEntity<String> calculateFormulaThree() {
+        long start = System.nanoTime();
+        Integer result = Stream.iterate(1, a -> a + 1)
+                .limit(100_000)
+                .reduce(0, (a, b) -> a + b);
+        long finish = System.nanoTime();
+        long elapsed = finish - start;
+
+        return ResponseEntity.ok("время " + elapsed + " результат " + result);
     }
 }
