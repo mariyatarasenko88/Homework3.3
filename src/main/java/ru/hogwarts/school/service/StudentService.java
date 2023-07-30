@@ -8,7 +8,9 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -16,6 +18,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
     private final Logger logger = LoggerFactory.getLogger(StudentService.class);
+    private Integer currentStudent = 0;
 
 
     public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository) {
@@ -86,5 +89,58 @@ public class StudentService {
                 .mapToInt(e -> e.getAge())
                 .average()
                 .orElse(0);
+    }
+    public void printStudentsThreads() {
+        List<Student> students = new ArrayList<>(this.getAllStudents());
+        new Thread(() -> {
+            printStudents(students, "Поток 1", 2);
+            printStudents(students, "Поток 1", 3);
+        }).start();
+        new Thread(() -> {
+            printStudents(students, "Поток 2", 4);
+            printStudents(students, "Поток 2", 5);
+        }).start();
+
+        printStudents(students, "Поток 0", 0);
+        printStudents(students, "Поток 0", 1);
+    }
+    private void printStudents(List<Student> students, String message, int number) {
+        System.out.println(message + ": №" + number + ": " + students.get(number).getName());
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            System.out.println("Thread has been interrupted");
+        }
+    }
+    public void printStudentsThreadsSync() {
+        List<Student> students = new ArrayList<>(this.getAllStudents());
+
+        Thread thread1 = new Thread(() -> {
+            printStudentsSync(students, "Поток 1", 2);
+            printStudentsSync(students, "Поток 1", 3);
+        });
+        thread1.start();
+
+        Thread thread2 = new Thread(() -> {
+            printStudentsSync(students, "Поток 2", 4);
+            printStudentsSync(students, "Поток 2", 5);
+        });
+        thread2.start();
+
+        printStudentsSync(students, "Поток 0", 0);
+        printStudentsSync(students, "Поток 0", 1);
+    }
+    private void printStudentsSync(List<Student> students, String message, int number) {
+        while (currentStudent != number) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                System.out.println("Thread has been interrupted");
+            }
+        }
+        synchronized (currentStudent) {
+            System.out.println(message + ": №" + number + ": " + students.get(number).getName());
+            currentStudent++;
+        }
     }
 }
